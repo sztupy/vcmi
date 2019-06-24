@@ -237,7 +237,8 @@ CBattleInterface::CBattleInterface(const CCreatureSet *army1, const CCreatureSet
 	bDefence->assignedKeys.insert(SDLK_SPACE);
 	bConsoleUp = std::make_shared<CButton>(Point(624, 561), "ComSlide.def", std::make_pair("", ""), std::bind(&CBattleInterface::bConsoleUpf,this), SDLK_UP);
 	bConsoleDown = std::make_shared<CButton>(Point(624, 580), "ComSlide.def", std::make_pair("", ""), std::bind(&CBattleInterface::bConsoleDownf,this), SDLK_DOWN);
-	bConsoleDown->setImageOrder(2, 3, 4, 5);
+	bConsoleUp->setImageOrder(0, 1, 0, 0);
+	bConsoleDown->setImageOrder(2, 3, 2, 2);
 
 	console = std::make_shared<CBattleConsole>();
 	console->pos.x += 211;
@@ -792,8 +793,11 @@ void CBattleInterface::bSurrenderf()
 	if (cost >= 0)
 	{
 		std::string enemyHeroName = curInt->cb->battleGetEnemyHero().name;
-		if (enemyHeroName.empty())
-			enemyHeroName = "#ENEMY#"; //TODO: should surrendering without enemy hero be enabled?
+		if(enemyHeroName.empty())
+		{
+			logGlobal->warn("Surrender performed without enemy hero, should not happen!");
+			enemyHeroName = "#ENEMY#";
+		}
 
 		std::string surrenderMessage = boost::str(boost::format(CGI->generaltexth->allTexts[32]) % enemyHeroName % cost); //%s states: "I will accept your surrender and grant you and your troops safe passage for the price of %d gold."
 		curInt->showYesNoDialog(surrenderMessage, [this](){ reallySurrender(); }, nullptr);
