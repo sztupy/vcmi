@@ -3,12 +3,12 @@ description: visit tile priority
 InputVariable: turnDistance
   description: distance to tile in turns
   enabled: true
-  range: 0.000 3.000
+  range: 0.000 4.000
   lock-range: true
-  term: SMALL Ramp 0.700 0.000
-  term: MEDIUM Triangle 0.000 0.700 1.500
-  term: LONG Discrete 0.700 0.000 2.000 0.300 3.000 1.000
-  term: SMALLEST Ramp 0.250 0.000
+  term: LOWEST Ramp 0.250 0.000
+  term: LOW Discrete 0.000 1.000 0.500 0.800 1.000 0.000
+  term: MEDIUM Discrete 0.000 0.000 0.500 0.200 1.000 1.000 2.500 0.300 4.000 0.000
+  term: LONG Discrete 1.000 0.000 1.500 0.200 3.000 0.800 4.000 1.000
 InputVariable: goldReward
   description: estimated amount of gold received
   enabled: true
@@ -51,7 +51,7 @@ InputVariable: skillReward
   range: 0.000 10.000
   lock-range: false
   term: NONE Ramp 1.000 0.000
-  term: SMALL Triangle 0.000 1.000 3.000
+  term: LOW Triangle 0.000 1.000 3.000
   term: MEDIUM Triangle 1.000 3.000 5.000
   term: HIGH Discrete 3.000 0.000 5.000 0.800 10.000 1.000
 InputVariable: rewardType
@@ -67,93 +67,70 @@ InputVariable: closestHeroRatio
   lock-range: false
   term: HIGH Ramp 0.750 1.000
   term: LOW Discrete 0.000 1.000 0.750 0.800 1.000 0.000
-OutputVariable: Value
+InputVariable: strategicalValue
+  description: Some abstract long term benefit non gold or army or skill
   enabled: true
   range: 0.000 1.000
+  lock-range: false
+  term: NONE Ramp 0.100 0.000
+  term: LOW Triangle 0.000 0.250 0.500
+  term: MEDIUM Discrete 0.250 0.000 0.500 1.000 0.700 0.300 1.000 0.000
+  term: HIGH Discrete 0.500 0.000 0.700 0.300 1.000 1.000
+OutputVariable: Value
+  enabled: true
+  range: -0.500 1.500
   lock-range: false
   aggregation: AlgebraicSum
   defuzzifier: Centroid 100
   default: 0.500
   lock-previous: false
-  term: LOWEST Ramp 0.150 0.000
-  term: LOW Triangle 0.100 0.100 0.250 0.500
-  term: BITLOW Triangle 0.200 0.200 0.350 0.250
+  term: LOWEST Discrete -0.500 0.000 -0.500 1.000 -0.200 1.000 -0.200 0.000 0.200 0.000 0.200 1.000 0.500 1.000 0.500 0.000
+  term: BITLOW Rectangle -0.050 0.050
+  term: LOW Discrete -0.200 0.000 -0.200 1.000 -0.050 1.000 -0.050 0.000 0.050 0.000 0.050 1.000 0.200 1.000 0.200 0.000
   term: MEDIUM Triangle 0.300 0.500 0.700 0.050
-  term: BITHIGH Triangle 0.650 0.800 0.800 0.250
-  term: HIGH Triangle 0.750 0.900 0.900 0.500
-  term: HIGHEST Ramp 0.850 1.000
+  term: HIGH Discrete 0.800 0.000 0.800 1.000 0.950 1.000 0.950 0.000 1.050 0.000 1.050 1.000 1.200 1.000 1.200 0.000
+  term: BITHIGH Rectangle 0.950 1.050
+  term: HIGHEST Discrete 0.500 0.000 0.500 1.000 0.800 1.000 0.800 0.000 1.200 0.000 1.200 1.000 1.500 1.000 1.500 0.000
 RuleBlock: gold reward
   enabled: true
   conjunction: AlgebraicProduct
   disjunction: AlgebraicSum
   implication: AlgebraicProduct
   activation: General
-  rule: if turnDistance is very LONG and heroRole is MAIN then Value is BITLOW
-  rule: if turnDistance is LONG and heroRole is SCOUT then Value is LOW
-  rule: if turnDistance is very LONG and heroRole is SCOUT then Value is LOWEST
-  rule: if rewardType is not NONE and goldReward is NONE and armyReward is NONE and skillReward is NONE and danger is NONE then Value is LOW
-  rule: if rewardType is not NONE and goldReward is NONE and armyReward is NONE and skillReward is NONE and danger is not NONE and heroRole is MAIN then Value is BITLOW
-  rule: if rewardType is not NONE and goldReward is NONE and armyReward is NONE and skillReward is NONE and danger is not NONE and heroRole is SCOUT then Value is LOW
-  rule: if rewardType is SINGLE and danger is NONE and goldReward is LOW and heroRole is SCOUT and turnDistance is SMALL then Value is HIGH
-  rule: if rewardType is SINGLE and danger is NONE and goldReward is LOW and heroRole is SCOUT and turnDistance is MEDIUM then Value is BITHIGH
-  rule: if rewardType is SINGLE and danger is NONE and goldReward is MEDIUM and heroRole is SCOUT and turnDistance is SMALL then Value is HIGHEST
-  rule: if rewardType is SINGLE and danger is NONE and goldReward is MEDIUM and heroRole is SCOUT and turnDistance is MEDIUM then Value is HIGH
-  rule: if heroRole is SCOUT and goldReward is HIGH and danger is NONE and turnDistance is SMALL then Value is HIGHEST
-  rule: if heroRole is SCOUT and goldReward is HIGH and danger is NONE and turnDistance is MEDIUM then Value is HIGH
-  rule: if heroRole is SCOUT and goldReward is HIGH and danger is not NONE and armyLoss is LOW and turnDistance is not LONG then Value is HIGH
-  rule: if heroRole is SCOUT and goldReward is MEDIUM and danger is not NONE and armyLoss is LOW and turnDistance is not LONG then Value is BITHIGH
-  rule: if rewardType is SINGLE and heroRole is MAIN and goldReward is HIGH and danger is NONE and turnDistance is not LONG then Value is BITHIGH
-  rule: if rewardType is SINGLE and heroRole is MAIN and goldReward is HIGH and danger is not NONE and armyLoss is LOW then Value is HIGH
-  rule: if rewardType is SINGLE and heroRole is MAIN and goldReward is not HIGH and goldReward is not NONE then Value is LOW
-  rule: if rewardType is SINGLE and heroRole is MAIN and goldReward is not HIGH and goldReward is not NONE and turnDistance is LONG then Value is LOWEST
-  rule: if rewardType is SINGLE and danger is NONE and armyReward is LOW and heroRole is SCOUT then Value is BITHIGH
-  rule: if rewardType is SINGLE and danger is NONE and armyReward is MEDIUM and heroRole is SCOUT then Value is HIGH with 0.8
-  rule: if rewardType is SINGLE and danger is NONE and armyReward is HIGH and heroRole is SCOUT and turnDistance is not very LONG then Value is HIGHEST
-  rule: if rewardType is SINGLE and danger is NONE and armyReward is HIGH and heroRole is SCOUT and turnDistance is very LONG then Value is BITHIGH
-  rule: if heroRole is SCOUT and armyReward is HIGH and danger is not NONE and armyLoss is LOW and turnDistance is not LONG then Value is BITHIGH
-  rule: if heroRole is SCOUT and armyReward is MEDIUM and danger is not NONE and armyLoss is LOW and turnDistance is not LONG then Value is MEDIUM
-  rule: if heroRole is SCOUT and armyReward is LOW and danger is not NONE and armyLoss is LOW and turnDistance is not LONG then Value is MEDIUM
-  rule: if rewardType is SINGLE and danger is NONE and armyReward is LOW and heroRole is MAIN and turnDistance is SMALL then Value is BITHIGH
-  rule: if rewardType is SINGLE and danger is NONE and armyReward is LOW and heroRole is MAIN and turnDistance is not SMALL then Value is BITLOW
-  rule: if rewardType is SINGLE and danger is NONE and armyReward is MEDIUM and heroRole is MAIN and turnDistance is SMALL then Value is HIGH with 0.8
-  rule: if rewardType is SINGLE and danger is NONE and armyReward is MEDIUM and heroRole is MAIN and turnDistance is not SMALL then Value is LOW with 0.8
-  rule: if rewardType is SINGLE and danger is NONE and armyReward is HIGH and heroRole is MAIN and turnDistance is SMALL then Value is HIGH
-  rule: if heroRole is MAIN and armyReward is HIGH and danger is not NONE and armyLoss is LOW and turnDistance is MEDIUM then Value is HIGH
-  rule: if heroRole is MAIN and armyReward is HIGH and danger is not NONE and armyLoss is LOW and turnDistance is SMALL then Value is HIGHEST
-  rule: if heroRole is MAIN and armyReward is HIGH and danger is not NONE and armyLoss is LOW and turnDistance is LONG then Value is BITHIGH
-  rule: if heroRole is MAIN and armyReward is MEDIUM and danger is not NONE and armyLoss is LOW and turnDistance is SMALL then Value is HIGH
-  rule: if heroRole is MAIN and armyReward is MEDIUM and danger is not NONE and armyLoss is LOW and turnDistance is MEDIUM then Value is BITHIGH
-  rule: if heroRole is MAIN and armyReward is MEDIUM and danger is not NONE and armyLoss is LOW and turnDistance is LONG then Value is BITHIGH
-  rule: if heroRole is MAIN and armyReward is LOW and danger is not NONE and armyLoss is LOW and turnDistance is MEDIUM then Value is MEDIUM
-  rule: if heroRole is MAIN and armyReward is LOW and danger is not NONE and armyLoss is LOW and turnDistance is LONG then Value is MEDIUM
-  rule: if heroRole is MAIN and armyReward is LOW and danger is not NONE and armyLoss is LOW and turnDistance is SMALL then Value is BITHIGH
-  rule: if heroRole is MAIN and armyReward is LOW and danger is NONE and turnDistance is SMALLEST then Value is HIGH
-  rule: if heroRole is MAIN and armyReward is HIGH and goldReward is HIGH and armyLoss is LOW and turnDistance is not LONG then Value is HIGHEST
-  rule: if heroRole is MAIN and armyReward is HIGH and goldReward is HIGH and armyLoss is LOW and turnDistance is LONG then Value is HIGH
-  rule: if heroRole is MAIN and armyReward is HIGH and goldReward is MEDIUM and armyLoss is LOW and turnDistance is not LONG then Value is HIGHEST with 0.8
-  rule: if heroRole is MAIN and armyReward is HIGH and goldReward is MEDIUM and armyLoss is LOW and turnDistance is LONG then Value is HIGH with 0.8
-  rule: if heroRole is MAIN and armyReward is MEDIUM and goldReward is HIGH and armyLoss is LOW and turnDistance is not LONG then Value is HIGHEST with 0.5
-  rule: if heroRole is MAIN and armyReward is MEDIUM and goldReward is HIGH and armyLoss is LOW and turnDistance is LONG then Value is HIGH with 0.5
-  rule: if heroRole is MAIN and armyReward is MEDIUM and goldReward is MEDIUM and armyLoss is LOW then Value is HIGH
-  rule: if heroRole is MAIN and armyReward is HIGH and turnDistance is SMALL and armyLoss is LOW then Value is HIGHEST
-  rule: if heroRole is MAIN and goldReward is HIGH and turnDistance is SMALL and armyLoss is LOW then Value is HIGHEST
-  rule: if skillReward is not NONE and rewardType is SINGLE and heroRole is SCOUT and turnDistance is LONG then Value is LOWEST
-  rule: if skillReward is SMALL and heroRole is SCOUT and turnDistance is not LONG then Value is BITLOW
-  rule: if skillReward is MEDIUM and heroRole is SCOUT and turnDistance is not LONG then Value is BITHIGH
-  rule: if skillReward is HIGH and heroRole is SCOUT and turnDistance is not LONG then Value is BITHIGH
-  rule: if skillReward is SMALL and heroRole is MAIN and turnDistance is SMALLEST then Value is BITHIGH
-  rule: if skillReward is SMALL and heroRole is MAIN and turnDistance is SMALL then Value is BITLOW
-  rule: if skillReward is SMALL and heroRole is MAIN and turnDistance is MEDIUM then Value is LOW
-  rule: if skillReward is MEDIUM and heroRole is MAIN and turnDistance is SMALLEST then Value is MEDIUM
-  rule: if skillReward is MEDIUM and heroRole is MAIN and turnDistance is SMALL then Value is BITLOW
-  rule: if skillReward is MEDIUM and heroRole is MAIN and turnDistance is MEDIUM then Value is LOW
-  rule: if skillReward is HIGH and heroRole is MAIN and turnDistance is SMALL then Value is HIGHEST
-  rule: if skillReward is HIGH and heroRole is MAIN and turnDistance is MEDIUM then Value is BITHIGH
-  rule: if skillReward is HIGH and heroRole is MAIN and turnDistance is LONG then Value is LOW
-  rule: if armyLoss is HIGH then Value is LOWEST
+  rule: if turnDistance is very LONG then Value is LOWEST with 0.3
+  rule: if turnDistance is LONG then Value is LOW
+  rule: if turnDistance is MEDIUM then Value is BITLOW
+  rule: if turnDistance is LOW then Value is MEDIUM
+  rule: if goldReward is HIGH and heroRole is SCOUT and danger is not NONE and armyLoss is LOW then Value is BITHIGH
+  rule: if goldReward is HIGH and heroRole is SCOUT and danger is NONE then Value is HIGH with 0.7
+  rule: if goldReward is HIGH and heroRole is MAIN and danger is not NONE and armyLoss is LOW then Value is HIGHEST with 0.7
+  rule: if goldReward is HIGH and heroRole is MAIN and danger is NONE then Value is BITHIGH
+  rule: if goldReward is MEDIUM and heroRole is SCOUT and danger is NONE then Value is HIGH with 0.7
+  rule: if goldReward is MEDIUM and armyLoss is LOW and heroRole is SCOUT and danger is not NONE then Value is MEDIUM
+  rule: if goldReward is MEDIUM and heroRole is MAIN and danger is NONE then Value is BITLOW
+  rule: if goldReward is MEDIUM and armyLoss is LOW and heroRole is MAIN and danger is not NONE then Value is BITHIGH
+  rule: if goldReward is LOW and heroRole is SCOUT and armyLoss is LOW then Value is BITHIGH
+  rule: if goldReward is LOW and heroRole is MAIN and danger is not NONE and armyLoss is LOW then Value is BITLOW
+  rule: if goldReward is LOW and heroRole is MAIN and danger is NONE then Value is LOW
+  rule: if armyReward is HIGH and heroRole is SCOUT and danger is not NONE and armyLoss is LOW then Value is HIGH with 0.5
+  rule: if armyReward is HIGH and heroRole is SCOUT and danger is NONE and rewardType is SINGLE then Value is HIGHEST
+  rule: if armyReward is HIGH and heroRole is SCOUT and danger is NONE and rewardType is MIXED then Value is HIGH with 0.7
+  rule: if armyReward is HIGH and heroRole is MAIN and danger is NONE and turnDistance is not LONG then Value is HIGHEST with 0.7
+  rule: if armyReward is HIGH and heroRole is MAIN and danger is not NONE and armyLoss is LOW then Value is HIGHEST with 0.7
+  rule: if armyReward is MEDIUM and heroRole is MAIN and danger is not NONE and armyLoss is LOW then Value is HIGH with 0.7
+  rule: if armyReward is MEDIUM and heroRole is MAIN and danger is NONE then Value is BITLOW
+  rule: if armyReward is MEDIUM and heroRole is SCOUT and danger is NONE then Value is HIGH
+  rule: if armyReward is LOW and heroRole is SCOUT and danger is NONE then Value is BITHIGH
+  rule: if armyReward is LOW and heroRole is MAIN and danger is not NONE and armyLoss is LOW then Value is BITLOW
+  rule: if armyReward is LOW and heroRole is MAIN and danger is NONE then Value is LOW
+  rule: if skillReward is LOW and heroRole is MAIN and armyLoss is LOW then Value is BITHIGH with 0.5
+  rule: if skillReward is MEDIUM and heroRole is MAIN and armyLoss is LOW then Value is HIGH with 0.5
+  rule: if skillReward is HIGH and heroRole is MAIN and armyLoss is LOW then Value is HIGH
+  rule: if strategicalValue is LOW and heroRole is MAIN and armyLoss is LOW then Value is BITLOW
+  rule: if strategicalValue is LOW and heroRole is SCOUT and armyLoss is LOW then Value is HIGH
+  rule: if strategicalValue is HIGH and heroRole is MAIN and armyLoss is LOW then Value is HIGHEST
+  rule: if strategicalValue is MEDIUM and heroRole is MAIN and armyLoss is LOW then Value is HIGH
   rule: if rewardType is NONE then Value is LOWEST
-  rule: if danger is HIGH and heroRole is SCOUT then Value is LOW
-  rule: if danger is MEDIUM and heroRole is SCOUT then Value is BITLOW
-  rule: if danger is LOW and heroRole is SCOUT then Value is MEDIUM
-  rule: if closestHeroRatio is LOW and heroRole is SCOUT then Value is LOW
-  rule: if closestHeroRatio is HIGH and heroRole is SCOUT then Value is BITHIGH
+  rule: if rewardType is MIXED then Value is BITHIGH
+  rule: if armyLoss is HIGH then Value is LOWEST
+  rule: if heroRole is SCOUT and closestHeroRatio is LOW then Value is LOW
