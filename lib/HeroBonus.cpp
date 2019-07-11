@@ -1154,7 +1154,12 @@ void CBonusSystemNode::setNodeType(CBonusSystemNode::ENodeTypes type)
 	nodeType = type;
 }
 
-BonusList& CBonusSystemNode::getExportedBonusList()
+BonusList & CBonusSystemNode::getExportedBonusList()
+{
+	return exportedBonuses;
+}
+
+const BonusList & CBonusSystemNode::getExportedBonusList() const
 {
 	return exportedBonuses;
 }
