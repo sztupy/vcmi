@@ -845,7 +845,7 @@ void DestinationActionRule::process(
 
 			if(action == CGPathNode::NORMAL)
 			{
-				if(pathfinderConfig->options.originalMovementRules && destination.guarded)
+				if(destination.guarded)
 					action = CGPathNode::BATTLE;
 				else
 					action = CGPathNode::VISIT;
