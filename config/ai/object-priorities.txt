@@ -76,9 +76,9 @@ InputVariable: closestHeroRatio
   enabled: true
   range: 0.000 1.000
   lock-range: false
-  term: LOW Discrete 0.000 1.000 0.900 0.800 1.000 0.000
-  term: HIGH Ramp 0.900 1.000
-  term: LOWEST Discrete 0.000 1.000 0.750 0.600 1.000 0.000
+  term: LOW Discrete 0.000 1.000 0.500 0.800 0.700 0.200 1.000 0.000
+  term: HIGH Discrete 0.500 0.000 0.700 0.600 1.000 1.000
+  term: LOWEST Discrete 0.000 1.000 0.400 0.200 0.900 0.000
 InputVariable: strategicalValue
   description: Some abstract long term benefit non gold or army or skill
   enabled: true
@@ -134,15 +134,22 @@ RuleBlock: gold reward
   disjunction: AlgebraicSum
   implication: AlgebraicProduct
   activation: General
-  rule: if scoutTurnDistance is very LONG and heroRole is SCOUT then Value is LOWEST with 0.3
-  rule: if mainTurnDistance is very LONG and heroRole is SCOUT then Value is LOWEST with 0.5
-  rule: if mainTurnDistance is very LONG and heroRole is MAIN and strategicalValue is NONE then Value is LOWEST with 0.5
-  rule: if mainTurnDistance is very LONG and heroRole is MAIN and strategicalValue is LOW then Value is LOWEST with 0.3
-  rule: if mainTurnDistance is very LONG and heroRole is MAIN and strategicalValue is MEDIUM then Value is LOW with 0.5
-  rule: if mainTurnDistance is very LONG and heroRole is MAIN and strategicalValue is HIGH then Value is BITLOW
-  rule: if scoutTurnDistance is LONG and heroRole is SCOUT then Value is LOW
-  rule: if mainTurnDistance is LONG and heroRole is MAIN then Value is LOW with 0.3
-  rule: if mainTurnDistance is LONG and heroRole is SCOUT then Value is LOW with 0.3
+  rule: if turn is NOW and mainTurnDistance is very LONG and heroRole is SCOUT then Value is LOW with 0.5
+  rule: if turn is NOW and mainTurnDistance is LONG and heroRole is SCOUT then Value is LOW with 0.3
+  rule: if turn is NOW and scoutTurnDistance is LONG and heroRole is SCOUT then Value is BITLOW with 0.3
+  rule: if turn is NEXT and mainTurnDistance is very LONG and heroRole is SCOUT then Value is LOW with 0.8
+  rule: if turn is NEXT and scoutTurnDistance is LONG and heroRole is SCOUT then Value is BITLOW
+  rule: if turn is NEXT and mainTurnDistance is LONG and heroRole is MAIN then Value is LOW with 0.3
+  rule: if turn is NEXT and mainTurnDistance is LONG and heroRole is SCOUT then Value is BITLOW with 0.3
+  rule: if turn is FUTURE and scoutTurnDistance is very LONG and heroRole is SCOUT then Value is LOWEST with 0.3
+  rule: if turn is FUTURE and mainTurnDistance is very LONG and heroRole is SCOUT then Value is LOWEST with 0.5
+  rule: if turn is FUTURE and mainTurnDistance is very LONG and heroRole is MAIN and strategicalValue is NONE then Value is LOWEST with 0.5
+  rule: if turn is FUTURE and mainTurnDistance is very LONG and heroRole is MAIN and strategicalValue is LOW then Value is LOWEST with 0.3
+  rule: if turn is FUTURE and mainTurnDistance is very LONG and heroRole is MAIN and strategicalValue is MEDIUM then Value is LOW with 0.5
+  rule: if turn is FUTURE and mainTurnDistance is very LONG and heroRole is MAIN and strategicalValue is HIGH then Value is BITLOW
+  rule: if turn is FUTURE and scoutTurnDistance is LONG and heroRole is SCOUT then Value is LOW
+  rule: if turn is FUTURE and mainTurnDistance is LONG and heroRole is MAIN then Value is LOW with 0.3
+  rule: if turn is FUTURE and mainTurnDistance is LONG and heroRole is SCOUT then Value is LOW with 0.3
   rule: if scoutTurnDistance is MEDIUM and heroRole is SCOUT then Value is BITLOW
   rule: if mainTurnDistance is MEDIUM then Value is BITLOW
   rule: if scoutTurnDistance is LOW and heroRole is SCOUT then Value is MEDIUM
@@ -165,6 +172,7 @@ RuleBlock: gold reward
   rule: if armyReward is HIGH and heroRole is MAIN and danger is NONE and mainTurnDistance is LOW then Value is HIGHEST with 0.7
   rule: if armyReward is HIGH and heroRole is MAIN and danger is NONE and mainTurnDistance is MEDIUM then Value is HIGH with 0.5
   rule: if armyReward is HIGH and heroRole is MAIN and danger is not NONE and armyLoss is LOW then Value is HIGHEST with 0.7
+  rule: if armyReward is HIGH and turn is NOW and heroRole is MAIN then Value is HIGHEST
   rule: if armyReward is MEDIUM and heroRole is MAIN and danger is not NONE and armyLoss is LOW then Value is HIGH with 0.7
   rule: if armyReward is MEDIUM and heroRole is MAIN and danger is NONE then Value is BITHIGH
   rule: if armyReward is MEDIUM and heroRole is MAIN and danger is NONE and mainTurnDistance is LOWEST then Value is HIGH with 0.2
@@ -196,4 +204,3 @@ RuleBlock: gold reward
   rule: if goldCost is MEDIUM and goldReward is NONE and goldPreasure is HIGH then Value is LOW
   rule: if goldCost is HIGH and goldReward is NONE and goldPreasure is HIGH then Value is LOWEST
   rule: if turn is NOW then Value is BITHIGH with 0.2
-  rule: if turn is FUTURE then Value is BITLOW
