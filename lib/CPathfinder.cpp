@@ -1392,5 +1392,6 @@ bool CDestinationNodeInfo::isBetterWay() const
 bool PathNodeInfo::isNodeObjectVisitable() const
 {
 	/// Hero can't visit objects while walking on water or flying
-	return canSeeObj(nodeObject) && (node->layer == EPathfindingLayer::LAND || node->layer == EPathfindingLayer::SAIL);
+	return (node->layer == EPathfindingLayer::LAND || node->layer == EPathfindingLayer::SAIL)
+		&& (canSeeObj(nodeObject) || canSeeObj(nodeHero));
 }

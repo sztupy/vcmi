@@ -148,8 +148,8 @@ RuleBlock: gold reward
   rule: if turn is FUTURE and mainTurnDistance is very LONG and heroRole is MAIN and strategicalValue is MEDIUM then Value is LOW with 0.5
   rule: if turn is FUTURE and mainTurnDistance is very LONG and heroRole is MAIN and strategicalValue is HIGH then Value is BITLOW
   rule: if turn is FUTURE and scoutTurnDistance is LONG and heroRole is SCOUT then Value is LOW
-  rule: if turn is FUTURE and mainTurnDistance is LONG and heroRole is MAIN then Value is LOW with 0.3
-  rule: if turn is FUTURE and mainTurnDistance is LONG and heroRole is SCOUT then Value is LOW with 0.3
+  rule: if turn is FUTURE and mainTurnDistance is LONG and heroRole is MAIN then Value is LOW
+  rule: if turn is FUTURE and mainTurnDistance is LONG and heroRole is SCOUT then Value is LOW
   rule: if scoutTurnDistance is MEDIUM and heroRole is SCOUT then Value is BITLOW
   rule: if mainTurnDistance is MEDIUM then Value is BITLOW
   rule: if scoutTurnDistance is LOW and heroRole is SCOUT then Value is MEDIUM
