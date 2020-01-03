@@ -1282,7 +1282,12 @@ static void handleEvent(SDL_Event & ev)
 				}
 				else
 				{
+#ifdef VCMI_ANDROID
+					// on Android we don't know when the server has stopped so we just wait for 5s and hope it's closed already
+					boost::this_thread::sleep(boost::posix_time::milliseconds(5000));
+#else
 					CSH->campaignServerRestartLock.waitUntil(false);
+#endif
 					finisher();
 				}
 			}
