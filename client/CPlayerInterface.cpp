@@ -1606,8 +1606,8 @@ void CPlayerInterface::playerBlocked(int reason, bool start)
 {
 	if(reason == PlayerBlocked::EReason::UPCOMING_BATTLE)
 	{
-		if(CSH->howManyPlayerInterfaces() > 1 && LOCPLINT != this && LOCPLINT->makingTurn == false)
-		{
+		if(CSH->howManyPlayerInterfaces() > 1 && LOCPLINT != this && LOCPLINT->makingTurn == false) 
+		{ 
 			//one of our players who isn't last in order got attacked not by our another player (happens for example in hotseat mode)
 			boost::unique_lock<boost::mutex> lock(eventsM); //TODO: copied from yourTurn, no idea if it's needed
 			LOCPLINT = this;
@@ -2160,7 +2160,7 @@ void CPlayerInterface::gameOver(PlayerColor player, const EVictoryLossCheckResul
 		GH.curInt = previousInterface;
 		LOCPLINT = previousInterface;
 
-		/*if(CSH->howManyPlayerInterfaces() == 1 && !settings["session"]["spectate"].Bool()) //all human players eliminated
+		if(CSH->howManyPlayerInterfaces() == 1 && !settings["session"]["spectate"].Bool()) //all human players eliminated
 		{
 			if(adventureInt)
 			{
@@ -2170,7 +2170,7 @@ void CPlayerInterface::gameOver(PlayerColor player, const EVictoryLossCheckResul
 					GH.popInt(adventureInt);
 				adventureInt.reset();
 			}
-		}*/
+		}
 
 		if (victoryLossCheckResult.victory() && LOCPLINT == this)
 		{
