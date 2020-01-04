@@ -648,6 +648,7 @@ PlayerColor CClient::getLocalPlayer() const
 #ifdef VCMI_ANDROID
 extern "C" JNIEXPORT void JNICALL Java_eu_vcmi_vcmi_NativeMethods_notifyServerClosed(JNIEnv * env, jobject cls)
 {
+	logNetwork->info("Received server closed signal");
 	if (CSH) {
 		CSH->campaignServerRestartLock.setn(false);
 	}

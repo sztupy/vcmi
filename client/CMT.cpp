@@ -1128,7 +1128,11 @@ static bool recreateWindow(int w, int h, int bpp, bool fullscreen, int displayIn
 
 	if(!(fullscreen && realFullscreen))
 	{
+#ifdef VCMI_ANDROID
+		SDL_RenderSetLogicalSize(mainRenderer, 1066, 600);
+#else
 		SDL_RenderSetLogicalSize(mainRenderer, w, h);
+#endif
 
 //following line is bugged not only on android, do not re-enable without checking
 //#ifndef VCMI_ANDROID
@@ -1151,7 +1155,7 @@ static bool recreateWindow(int w, int h, int bpp, bool fullscreen, int displayIn
 		int amask = 0xFF000000;
 	#endif
 
-	screen = SDL_CreateRGBSurface(0,w,h,bpp,rmask,gmask,bmask,amask);
+	screen = SDL_CreateRGBSurface(0,1066,600,bpp,rmask,gmask,bmask,amask);
 	if(nullptr == screen)
 	{
 		logGlobal->error("Unable to create surface %dx%d with %d bpp: %s", w, h, bpp, SDL_GetError());
@@ -1163,7 +1167,7 @@ static bool recreateWindow(int w, int h, int bpp, bool fullscreen, int displayIn
 	screenTexture = SDL_CreateTexture(mainRenderer,
                                             SDL_PIXELFORMAT_ARGB8888,
                                             SDL_TEXTUREACCESS_STREAMING,
-                                            w, h);
+                                            1066, 600);
 
 	if(nullptr == screenTexture)
 	{
